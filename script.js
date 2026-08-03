@@ -213,8 +213,20 @@ async function loadTodos() {
     try {
         const res = await fetch(`${API_BASE}/todos/${dateStr}`);
         if (!res.ok) throw new Error('API server returned error');
-        currentTodos = await res.json();
-        isOnlineAPI = true;
+        const data = await res.json();
+
+        if (data && data.offline) {
+            isOnlineAPI = false;
+            const localData = localStorage.getItem(`todos_${dateStr}`);
+            currentTodos = localData ? JSON.parse(localData) : [];
+        } else if (Array.isArray(data)) {
+            isOnlineAPI = true;
+            currentTodos = data;
+        } else {
+            isOnlineAPI = false;
+            const localData = localStorage.getItem(`todos_${dateStr}`);
+            currentTodos = localData ? JSON.parse(localData) : [];
+        }
     } catch (err) {
         // Fallback to localStorage
         isOnlineAPI = false;

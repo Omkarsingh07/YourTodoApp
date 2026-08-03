@@ -14,9 +14,9 @@ app.use(bodyParser.json());
 // Database Availability Guard
 app.use('/api', (req, res, next) => {
   if (!process.env.DATABASE_URL) {
-    return res.status(503).json({
-      error: "Database not connected",
-      message: "DATABASE_URL is not set. Web app will run in LocalStorage mode."
+    return res.status(200).json({
+      offline: true,
+      message: "DATABASE_URL is not set. Web app is running in LocalStorage mode."
     });
   }
   next();
