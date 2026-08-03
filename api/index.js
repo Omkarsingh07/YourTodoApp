@@ -1,4 +1,4 @@
-// api/index.js - Vercel Serverless Function Entry Point
+// api/index.js - Express API & Serverless Handler
 require('dotenv').config();
 const path = require('path');
 const express = require('express');
@@ -12,12 +12,50 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// Serve static assets from project root as fallback
+// Serve static assets from project root
 app.use(express.static(path.join(__dirname, '..')));
 
-// Database Availability Guard
+// Optional PostgreSQL Pool Initialization
+let pool = null;
+if (process.env.DATABASE_URL) {
+  pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }
+  });
+}
+
+// Initialize Database if DATABASE_URL is available
+async function initializeDatabase() {
+  if (!process.env.DATABASE_URL || !pool) {
+    console.log("DATABASE_URL environment variable not set.");
+    console.log("The web app will run smoothly and use local storage fallback for task persistence.");
+    return;
+  }
+
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS todos (
+        id SERIAL PRIMARY KEY,
+        text TEXT NOT NULL,
+        date DATE NOT NULL,
+        completed BOOLEAN DEFAULT FALSE,
+        completion_percentage INT DEFAULT 0,
+        reason TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        completed_at TIMESTAMP NULL
+      )
+    `);
+    console.log("Database initialized successfully");
+  } catch (error) {
+    console.warn("Database initialization warning:", error.message);
+  }
+}
+
+initializeDatabase();
+
+// Database Guard Middleware
 app.use('/api', (req, res, next) => {
-  if (!process.env.DATABASE_URL) {
+  if (!process.env.DATABASE_URL || !pool) {
     return res.status(200).json({
       offline: true,
       message: "DATABASE_URL is not set. Web app is running in LocalStorage mode."
@@ -25,40 +63,6 @@ app.use('/api', (req, res, next) => {
   }
   next();
 });
-
-// PostgreSQL connection
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false
-});
-
-// Initialize database
-async function initializeDatabase() {
-  try {
-    if (process.env.DATABASE_URL) {
-      await pool.query(`
-        CREATE TABLE IF NOT EXISTS todos (
-          id SERIAL PRIMARY KEY,
-          text TEXT NOT NULL,
-          date DATE NOT NULL,
-          completed BOOLEAN DEFAULT FALSE,
-          completion_percentage INT DEFAULT 0,
-          reason TEXT,
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-          completed_at TIMESTAMP NULL
-        )
-      `);
-      console.log("Database initialized successfully");
-    } else {
-      console.log("DATABASE_URL environment variable not set.");
-      console.log("The web app will run smoothly and use local storage fallback for task persistence.");
-    }
-  } catch (error) {
-    console.warn("Database initialization warning:", error.message);
-  }
-}
-
-initializeDatabase();
 
 // Get todos for a specific date
 app.get('/api/todos/:date', async (req, res) => {
