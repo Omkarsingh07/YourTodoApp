@@ -416,43 +416,45 @@ function renderTodos() {
         const isCompleted = todo.completed;
         const isFull100 = isCompleted && (todo.completion_percentage === 100);
         
-        item.className = `todo-item ${isCompleted ? (isFull100 ? 'completed' : 'incomplete-completed') : ''}`;
+        item.className = `todo-item p-3.5 sm:p-5 rounded-xl md:rounded-2xl flex flex-col gap-2.5 transition-all bg-bg-card-solid border border-border-color shadow-sm relative overflow-hidden ${isCompleted ? (isFull100 ? 'completed' : 'incomplete-completed') : ''}`;
 
         let statusDetails = '';
         if (isCompleted) {
             const dateStr = todo.completed_at ? new Date(todo.completed_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
             statusDetails = `
-                <div class="todo-status-badge">
-                    <span class="pct-tag ${isFull100 ? 'pct-100' : 'pct-partial'}">
+                <div class="todo-status-badge mt-2 pt-2.5 border-t border-border-color flex items-center gap-2 flex-wrap text-xs">
+                    <span class="pct-tag px-2 py-0.5 rounded-md font-bold ${isFull100 ? 'pct-100 bg-success-bg text-success' : 'pct-partial bg-warning-bg text-warning'}">
                         ${todo.completion_percentage}% Completed
                     </span>
-                    ${todo.reason ? `<span class="reason-tag">Reason: "${escapeHtml(todo.reason)}"</span>` : ''}
-                    ${dateStr ? `<span class="time-tag">Completed at ${dateStr}</span>` : ''}
+                    ${todo.reason ? `<span class="reason-tag text-warning italic break-all">Reason: "${escapeHtml(todo.reason)}"</span>` : ''}
+                    ${dateStr ? `<span class="time-tag text-text-dim">Completed at ${dateStr}</span>` : ''}
                 </div>
             `;
         }
 
         item.innerHTML = `
-            <div class="todo-main-row">
-                <div class="todo-text-group">
-                    <button class="checkbox-btn ${isCompleted ? 'checked' : ''}" onclick="markComplete(${todo.id})" title="${isCompleted ? 'Re-review progress' : 'Mark as complete'}">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg>
-                    </button>
-                    <span class="todo-title ${isCompleted ? 'strikethrough' : ''}">${escapeHtml(todo.text)}</span>
+            <div class="todo-main-row flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 w-full">
+                <div class="todo-text-group flex items-center gap-3 flex-1 w-full sm:w-auto">
+                    <div class="checkbox-wrapper min-w-[44px] min-h-[44px] flex items-center justify-center flex-shrink-0">
+                        <button class="checkbox-btn ${isCompleted ? 'checked bg-success border-success text-white' : 'bg-transparent border-2 border-text-dim text-transparent'} w-6 h-6 rounded-md cursor-pointer flex items-center justify-center transition-all" onclick="markComplete(${todo.id})" title="${isCompleted ? 'Re-review progress' : 'Mark as complete'}" aria-label="Toggle completion status">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        </button>
+                    </div>
+                    <span class="todo-title text-sm sm:text-base font-semibold text-text-main leading-snug break-words flex-1 ${isCompleted ? 'strikethrough line-through text-text-muted' : ''}">${escapeHtml(todo.text)}</span>
                 </div>
 
-                <div class="todo-actions">
+                <div class="todo-actions flex items-center justify-end gap-2 w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-border-color flex-shrink-0">
                     ${!isCompleted ? `
-                        <button class="action-btn complete-btn" onclick="markComplete(${todo.id})">
+                        <button class="action-btn complete-btn min-h-[44px] px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold flex items-center gap-1.5 cursor-pointer transition-all bg-success-bg text-success border border-success-border hover:bg-success hover:text-white" onclick="markComplete(${todo.id})">
                             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
                             <span>Review</span>
                         </button>
                     ` : `
-                        <button class="action-btn edit-btn" onclick="markComplete(${todo.id})">
+                        <button class="action-btn edit-btn min-h-[44px] min-w-[44px] px-3 py-2 rounded-lg text-xs sm:text-sm font-semibold flex items-center justify-center gap-1.5 cursor-pointer transition-all bg-bg-input text-text-muted hover:bg-bg-hover hover:text-text-main" onclick="markComplete(${todo.id})" title="Edit Review">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                         </button>
                     `}
-                    <button class="action-btn delete-btn" onclick="deleteTodo(${todo.id})" title="Delete Task">
+                    <button class="action-btn delete-btn min-h-[44px] min-w-[44px] px-3 py-2 rounded-lg text-xs sm:text-sm font-semibold flex items-center justify-center gap-1.5 cursor-pointer transition-all bg-bg-input text-text-muted hover:bg-danger/15 hover:text-danger" onclick="deleteTodo(${todo.id})" title="Delete Task">
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                     </button>
                 </div>

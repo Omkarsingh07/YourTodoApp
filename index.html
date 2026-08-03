@@ -14,22 +14,23 @@
     <meta property="og:type" content="website">
     <title>Daily Todo Manager — Plan Morning, Review Night</title>
 
-    <!-- CSS Stylesheet -->
+    <!-- CSS Stylesheets -->
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="output.css">
 </head>
 
 <body class="theme-dark">
-    <div class="app-wrapper">
+    <div class="app-wrapper relative min-h-screen p-3 sm:p-6 lg:p-8 flex justify-center items-start w-full overflow-x-hidden">
         <!-- Background Ambient Glows -->
         <div class="ambient-glow glow-1"></div>
         <div class="ambient-glow glow-2"></div>
 
-        <div class="container">
+        <div class="container relative z-10 w-full max-w-4xl bg-bg-card border border-border-color rounded-2xl md:rounded-3xl shadow-2xl overflow-hidden backdrop-blur-xl">
             <!-- Header Section -->
-            <header class="header">
-                <div class="header-main">
-                    <div class="brand">
-                        <div class="brand-icon">
+            <header class="header p-4 sm:p-6 md:p-8 border-b border-border-color">
+                <div class="header-main flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-5 md:mb-6">
+                    <div class="brand flex items-center gap-3 sm:gap-4 flex-wrap sm:flex-nowrap">
+                        <div class="brand-icon w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
@@ -37,14 +38,14 @@
                             </svg>
                         </div>
                         <div>
-                            <h1>Daily Todo Manager</h1>
-                            <p class="subtitle">Plan your morning, review in night</p>
+                            <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-text-main">Daily Todo Manager</h1>
+                            <p class="subtitle text-xs sm:text-sm text-text-muted mt-0.5">Plan your morning, review in night</p>
                         </div>
                     </div>
 
                     <!-- Header Controls: Theme & Date Navigation -->
-                    <div class="header-actions">
-                        <button id="themeToggle" class="icon-btn" title="Toggle Theme"
+                    <div class="header-actions flex items-center gap-2 self-end sm:self-auto">
+                        <button id="themeToggle" class="icon-btn min-w-[44px] min-h-[44px] w-11 h-11 rounded-xl flex items-center justify-center transition-all cursor-pointer bg-bg-input border border-border-color hover:bg-bg-hover hover:border-border-focus" title="Toggle Theme"
                             aria-label="Toggle light/dark theme">
                             <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="2">
@@ -61,56 +62,56 @@
                 </div>
 
                 <!-- Date Selector Bar -->
-                <div class="date-bar">
-                    <div class="date-nav">
-                        <button id="prevDateBtn" class="date-nav-btn" title="Previous Day" aria-label="Previous day">
+                <div class="date-bar flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 w-full">
+                    <div class="date-nav flex items-center justify-between sm:justify-start gap-2 w-full sm:w-auto flex-1">
+                        <button id="prevDateBtn" class="date-nav-btn min-w-[44px] min-h-[44px] w-11 h-11 rounded-lg flex items-center justify-center transition-all bg-bg-input border border-border-color text-text-main hover:bg-bg-hover hover:text-primary" title="Previous Day" aria-label="Previous day">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2.5">
                                 <path d="m15 18-6-6 6-6" />
                             </svg>
                         </button>
-                        <div class="date-input-wrapper">
-                            <svg class="calendar-icon" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        <div class="date-input-wrapper flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl bg-bg-input border border-border-color flex-1 sm:flex-initial min-h-[44px] justify-center sm:justify-start">
+                            <svg class="calendar-icon text-primary flex-shrink-0" width="18" height="18" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="2">
                                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
                                 <line x1="16" y1="2" x2="16" y2="6" />
                                 <line x1="8" y1="2" x2="8" y2="6" />
                                 <line x1="3" y1="10" x2="21" y2="10" />
                             </svg>
-                            <input type="date" id="selectedDate" aria-label="Select Date" />
-                            <span id="dateDisplayLabel" class="date-display-label">Today</span>
+                            <input type="date" id="selectedDate" aria-label="Select Date" class="border-none bg-transparent text-text-main text-xs sm:text-sm font-semibold outline-none cursor-pointer" />
+                            <span id="dateDisplayLabel" class="date-display-label text-xs font-bold text-primary bg-primary-glow px-2.5 py-1 rounded-full whitespace-nowrap">Today</span>
                         </div>
-                        <button id="nextDateBtn" class="date-nav-btn" title="Next Day" aria-label="Next day">
+                        <button id="nextDateBtn" class="date-nav-btn min-w-[44px] min-h-[44px] w-11 h-11 rounded-lg flex items-center justify-center transition-all bg-bg-input border border-border-color text-text-main hover:bg-bg-hover hover:text-primary" title="Next Day" aria-label="Next day">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2.5">
                                 <path d="m9 18 6-6-6-6" />
                             </svg>
                         </button>
                     </div>
-                    <button id="todayBtn" class="today-btn">Today</button>
+                    <button id="todayBtn" class="today-btn min-h-[44px] px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-primary bg-primary-glow border border-primary/30 transition-all hover:bg-primary hover:text-white flex items-center justify-center w-full sm:w-auto">Today</button>
                 </div>
             </header>
 
             <!-- Main Workspace -->
-            <main class="main-content">
+            <main class="main-content p-4 sm:p-6 md:p-8 space-y-5 sm:space-y-7">
                 <!-- Overview Cards & Progress -->
                 <section class="overview-section">
-                    <div class="progress-card">
-                        <div class="progress-info">
-                            <div class="progress-text">
-                                <span class="progress-title">Daily Progress</span>
-                                <span id="progressPercentageText" class="progress-value">0%</span>
+                    <div class="progress-card p-4 sm:p-6 rounded-xl md:rounded-2xl border border-border-color bg-bg-card-solid shadow-sm mb-4 sm:mb-6">
+                        <div class="progress-info mb-3">
+                            <div class="progress-text flex items-center justify-between gap-2 mb-1.5">
+                                <span class="progress-title text-xs sm:text-sm font-bold text-text-muted uppercase tracking-wider">Daily Progress</span>
+                                <span id="progressPercentageText" class="progress-value text-lg sm:text-xl font-extrabold text-primary">0%</span>
                             </div>
-                            <p id="progressSubtitle" class="progress-subtitle">No tasks added for this day</p>
+                            <p id="progressSubtitle" class="progress-subtitle text-xs sm:text-sm text-text-muted mt-0.5">No tasks added for this day</p>
                         </div>
-                        <div class="progress-bar-track">
-                            <div id="progressBarFill" class="progress-bar-fill" style="width: 0%;"></div>
+                        <div class="progress-bar-track w-full h-2.5 bg-bg-input rounded-full overflow-hidden">
+                            <div id="progressBarFill" class="progress-bar-fill h-full rounded-full transition-all duration-500" style="width: 0%;"></div>
                         </div>
                     </div>
 
-                    <div class="stats-grid" id="stats">
-                        <div class="stat-card">
-                            <div class="stat-icon total-icon">
+                    <div class="stats-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4" id="stats">
+                        <div class="stat-card p-3.5 sm:p-4 rounded-xl border border-border-color bg-bg-card-solid shadow-sm flex items-center gap-3.5 transition-transform hover:-translate-y-0.5 w-full min-h-[72px]">
+                            <div class="stat-icon total-icon w-11 h-11 rounded-lg flex items-center justify-center flex-shrink-0 min-w-[44px] min-h-[44px]">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                     stroke-width="2">
                                     <path
@@ -118,37 +119,37 @@
                                     <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
                                 </svg>
                             </div>
-                            <div class="stat-details">
-                                <span class="stat-number" id="totalTasks">0</span>
-                                <span class="stat-label">Total Tasks</span>
+                            <div class="stat-details flex-1 min-w-0">
+                                <span class="stat-number text-xl sm:text-2xl font-extrabold leading-none text-text-main block" id="totalTasks">0</span>
+                                <span class="stat-label text-xs font-semibold text-text-muted mt-1 block truncate">Total Tasks</span>
                             </div>
                         </div>
 
-                        <div class="stat-card">
-                            <div class="stat-icon completed-icon">
+                        <div class="stat-card p-3.5 sm:p-4 rounded-xl border border-border-color bg-bg-card-solid shadow-sm flex items-center gap-3.5 transition-transform hover:-translate-y-0.5 w-full min-h-[72px]">
+                            <div class="stat-icon completed-icon w-11 h-11 rounded-lg flex items-center justify-center flex-shrink-0 min-w-[44px] min-h-[44px]">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                     stroke-width="2">
                                     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
                                     <polyline points="22 4 12 14.01 9 11.01" />
                                 </svg>
                             </div>
-                            <div class="stat-details">
-                                <span class="stat-number" id="completedTasks">0</span>
-                                <span class="stat-label">Completed</span>
+                            <div class="stat-details flex-1 min-w-0">
+                                <span class="stat-number text-xl sm:text-2xl font-extrabold leading-none text-text-main block" id="completedTasks">0</span>
+                                <span class="stat-label text-xs font-semibold text-text-muted mt-1 block truncate">Completed</span>
                             </div>
                         </div>
 
-                        <div class="stat-card">
-                            <div class="stat-icon pending-icon">
+                        <div class="stat-card p-3.5 sm:p-4 rounded-xl border border-border-color bg-bg-card-solid shadow-sm flex items-center gap-3.5 transition-transform hover:-translate-y-0.5 w-full min-h-[72px]">
+                            <div class="stat-icon pending-icon w-11 h-11 rounded-lg flex items-center justify-center flex-shrink-0 min-w-[44px] min-h-[44px]">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                     stroke-width="2">
                                     <circle cx="12" cy="12" r="10" />
                                     <polyline points="12 6 12 12 16 14" />
                                 </svg>
                             </div>
-                            <div class="stat-details">
-                                <span class="stat-number" id="pendingTasks">0</span>
-                                <span class="stat-label">Pending</span>
+                            <div class="stat-details flex-1 min-w-0">
+                                <span class="stat-number text-xl sm:text-2xl font-extrabold leading-none text-text-main block" id="pendingTasks">0</span>
+                                <span class="stat-label text-xs font-semibold text-text-muted mt-1 block truncate">Pending</span>
                             </div>
                         </div>
                     </div>
@@ -156,17 +157,17 @@
 
                 <!-- Input & Controls Section -->
                 <section class="task-form-section">
-                    <form id="todoForm" class="add-todo-form" onsubmit="event.preventDefault(); addTodo();">
-                        <div class="input-group">
-                            <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    <form id="todoForm" class="add-todo-form flex flex-col md:flex-row gap-3 items-stretch w-full" onsubmit="event.preventDefault(); addTodo();">
+                        <div class="input-group relative flex-1 flex items-center w-full">
+                            <svg class="input-icon absolute left-4 text-text-dim pointer-events-none" width="20" height="20" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="2">
                                 <line x1="12" y1="5" x2="12" y2="19" />
                                 <line x1="5" y1="12" x2="19" y2="12" />
                             </svg>
-                            <input type="text" class="todo-input" id="todoInput"
+                            <input type="text" class="todo-input w-full min-h-[48px] py-3 pl-12 pr-4 bg-bg-input border border-border-color rounded-xl text-text-main text-sm sm:text-base outline-none transition-all focus:border-border-focus focus:ring-2 focus:ring-primary-glow" id="todoInput"
                                 placeholder="What do you plan to accomplish today?" autocomplete="off" required />
                         </div>
-                        <button type="submit" class="add-btn" id="addBtn">
+                        <button type="submit" class="add-btn w-full md:w-auto min-h-[48px] px-6 py-3 bg-primary hover:bg-primary-hover text-white font-bold text-sm rounded-xl cursor-pointer flex items-center justify-center gap-2 shadow-md transition-all whitespace-nowrap flex-shrink-0" id="addBtn">
                             <span>Add Task</span>
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2.5">
@@ -178,40 +179,40 @@
                 </section>
 
                 <!-- Filter & Search Toolbar -->
-                <section class="toolbar-section">
-                    <div class="filter-tabs" role="tablist">
-                        <button class="filter-tab active" data-filter="all" role="tab" aria-selected="true">
+                <section class="toolbar-section flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 sm:gap-4 mb-5">
+                    <div class="filter-tabs flex items-center gap-1 bg-bg-input p-1 rounded-xl border border-border-color overflow-x-auto scrollbar-none w-full md:w-auto" role="tablist">
+                        <button class="filter-tab active min-h-[44px] px-3.5 sm:px-4 py-2 rounded-lg font-semibold text-xs sm:text-sm text-text-muted transition-all whitespace-nowrap flex items-center justify-center cursor-pointer flex-1 md:flex-initial text-center" data-filter="all" role="tab" aria-selected="true">
                             All Tasks (<span id="filterAllCount">0</span>)
                         </button>
-                        <button class="filter-tab" data-filter="pending" role="tab" aria-selected="false">
+                        <button class="filter-tab min-h-[44px] px-3.5 sm:px-4 py-2 rounded-lg font-semibold text-xs sm:text-sm text-text-muted transition-all whitespace-nowrap flex items-center justify-center cursor-pointer flex-1 md:flex-initial text-center" data-filter="pending" role="tab" aria-selected="false">
                             Pending (<span id="filterPendingCount">0</span>)
                         </button>
-                        <button class="filter-tab" data-filter="completed" role="tab" aria-selected="false">
+                        <button class="filter-tab min-h-[44px] px-3.5 sm:px-4 py-2 rounded-lg font-semibold text-xs sm:text-sm text-text-muted transition-all whitespace-nowrap flex items-center justify-center cursor-pointer flex-1 md:flex-initial text-center" data-filter="completed" role="tab" aria-selected="false">
                             Completed (<span id="filterCompletedCount">0</span>)
                         </button>
                     </div>
 
-                    <div class="search-box">
+                    <div class="search-box flex items-center gap-2 bg-bg-input border border-border-color rounded-xl px-3.5 py-2.5 min-h-[44px] w-full md:w-64 text-text-dim">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
+                            stroke-width="2" class="flex-shrink-0">
                             <circle cx="11" cy="11" r="8" />
                             <line x1="21" y1="21" x2="16.65" y2="16.65" />
                         </svg>
                         <input type="text" id="searchInput" placeholder="Filter by keyword..."
-                            aria-label="Filter tasks by keyword" />
+                            aria-label="Filter tasks by keyword" class="w-full bg-transparent border-none text-text-main text-xs sm:text-sm outline-none placeholder:text-text-dim" />
                     </div>
                 </section>
 
                 <!-- Todo List Container -->
                 <section class="list-section">
-                    <div class="todo-list" id="todoList">
+                    <div class="todo-list flex flex-col gap-3 min-h-[180px] w-full" id="todoList">
                         <!-- Dynamic items or empty state -->
                     </div>
                 </section>
             </main>
 
             <!-- Footer -->
-            <footer class="footer">
+            <footer class="footer p-4 text-center border-t border-border-color text-xs sm:text-sm text-text-dim">
                 <p>Daily Todo Manager &copy; 2026 — WRSMAT.COM</p>
             </footer>
         </div>
@@ -219,70 +220,72 @@
 
     <!-- Template for Empty State (Rendered in JS when zero tasks) -->
     <template id="emptyStateTemplate">
-        <div class="empty-state" id="emptyState">
-            <div class="empty-illustration">
+        <div class="empty-state text-center p-8 sm:p-12 text-text-muted bg-bg-card-solid border border-dashed border-border-color rounded-2xl w-full" id="emptyState">
+            <div class="empty-illustration mb-4 text-text-dim flex justify-center">
                 <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
-                    stroke-linecap="round" stroke-linejoin="round">
+                    stroke-linecap="round" stroke-linejoin="round" class="w-12 h-12 sm:w-16 sm:h-16">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                     <polyline points="14 2 14 8 20 8"></polyline>
                     <line x1="12" y1="18" x2="12" y2="12"></line>
                     <line x1="9" y1="15" x2="15" y2="15"></line>
                 </svg>
             </div>
-            <h3>No tasks for this day</h3>
-            <p>Start your day with clarity. Add your first goal above!</p>
+            <h3 class="text-base sm:text-lg font-bold text-text-main mb-1.5">No tasks for this day</h3>
+            <p class="text-xs sm:text-sm text-text-muted">Start your day with clarity. Add your first goal above!</p>
         </div>
     </template>
 
     <!-- Completion Review Modal -->
-    <div id="completionModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-        <div class="modal-backdrop" onclick="closeModal()"></div>
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeModal()" aria-label="Close modal">
+    <div id="completionModal" class="modal fixed inset-0 z-50 p-3 sm:p-4 items-center justify-center overflow-y-auto hidden [&.active]:flex" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-backdrop fixed inset-0 bg-black/70 backdrop-blur-sm" onclick="closeModal()"></div>
+        <div class="modal-content relative z-10 w-full max-w-lg max-h-[90vh] my-auto mx-auto bg-bg-card-solid border border-border-color rounded-2xl md:rounded-3xl p-4 sm:p-7 shadow-2xl flex flex-col overflow-y-auto">
+            <button class="modal-close absolute top-4 right-4 min-w-[44px] min-h-[44px] p-2 flex items-center justify-center bg-transparent text-text-dim hover:text-text-main cursor-pointer rounded-lg" onclick="closeModal()" aria-label="Close modal">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <line x1="18" y1="6" x2="6" y2="18" />
                     <line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
             </button>
 
-            <div class="modal-header">
-                <div class="modal-badge">Night Review</div>
-                <h3 id="modalTitle">Task Completion Review</h3>
-                <p class="modal-task-title" id="taskTitle">"Task Title Placeholder"</p>
+            <div class="modal-header mb-4">
+                <div class="modal-badge inline-block text-[11px] font-extrabold uppercase tracking-wider bg-primary-glow text-primary px-2.5 py-1 rounded-full mb-2">Night Review</div>
+                <h3 id="modalTitle" class="text-lg sm:text-xl font-extrabold text-text-main">Task Completion Review</h3>
+                <p class="modal-task-title text-xs sm:text-sm text-text-muted mt-1" id="taskTitle">"Task Title Placeholder"</p>
             </div>
 
-            <div class="modal-body">
-                <div class="field-group">
-                    <label for="completionPercentage">Completion Percentage: <span id="percentageBadge"
-                            class="percentage-badge">100%</span></label>
+            <div class="modal-body space-y-4">
+                <div class="field-group mb-4">
+                    <label for="completionPercentage" class="flex justify-between items-center text-xs sm:text-sm font-bold text-text-main mb-3">
+                        <span>Completion Percentage:</span>
+                        <span id="percentageBadge" class="percentage-badge text-primary text-sm sm:text-base font-extrabold">100%</span>
+                    </label>
 
                     <!-- Quick Percentage Presets -->
-                    <div class="percentage-presets">
-                        <button type="button" class="preset-btn" data-value="25">25%</button>
-                        <button type="button" class="preset-btn" data-value="50">50%</button>
-                        <button type="button" class="preset-btn" data-value="75">75%</button>
-                        <button type="button" class="preset-btn active" data-value="100">100%</button>
+                    <div class="percentage-presets grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
+                        <button type="button" class="preset-btn min-h-[44px] p-2.5 rounded-lg bg-bg-input border border-border-color text-text-main font-bold text-xs sm:text-sm cursor-pointer transition-all hover:bg-primary hover:text-white flex items-center justify-center" data-value="25">25%</button>
+                        <button type="button" class="preset-btn min-h-[44px] p-2.5 rounded-lg bg-bg-input border border-border-color text-text-main font-bold text-xs sm:text-sm cursor-pointer transition-all hover:bg-primary hover:text-white flex items-center justify-center" data-value="50">50%</button>
+                        <button type="button" class="preset-btn min-h-[44px] p-2.5 rounded-lg bg-bg-input border border-border-color text-text-main font-bold text-xs sm:text-sm cursor-pointer transition-all hover:bg-primary hover:text-white flex items-center justify-center" data-value="75">75%</button>
+                        <button type="button" class="preset-btn active min-h-[44px] p-2.5 rounded-lg bg-bg-input border border-border-color text-text-main font-bold text-xs sm:text-sm cursor-pointer transition-all hover:bg-primary hover:text-white flex items-center justify-center" data-value="100">100%</button>
                     </div>
 
                     <input type="range" id="completionRange" min="0" max="100" step="5" value="100"
-                        class="range-slider" />
+                        class="range-slider w-full h-2.5 accent-primary cursor-pointer my-3" />
 
-                    <input type="number" id="completionPercentage" class="percentage-input" min="0" max="100"
+                    <input type="number" id="completionPercentage" class="percentage-input w-full min-h-[44px] px-3.5 py-2.5 bg-bg-input border border-border-color rounded-xl text-text-main text-xs sm:text-sm outline-none focus:border-border-focus" min="0" max="100"
                         value="100" placeholder="Enter percentage (0-100)" />
                 </div>
 
-                <div id="reasonSection" class="reason-section" style="display: none;">
-                    <label for="incompleteReason">
-                        Reason for Incomplete Status <span class="required-star">*</span>
+                <div id="reasonSection" class="reason-section pt-2" style="display: none;">
+                    <label for="incompleteReason" class="block text-xs sm:text-sm font-bold text-text-main mb-2">
+                        Reason for Incomplete Status <span class="required-star text-danger">*</span>
                     </label>
-                    <textarea id="incompleteReason" class="reason-input" rows="3"
+                    <textarea id="incompleteReason" class="reason-input w-full min-h-[80px] p-3 bg-bg-input border border-border-color rounded-xl text-text-main text-xs sm:text-sm outline-none focus:border-border-focus" rows="3"
                         placeholder="What got in the way? (e.g., unexpected meetings, need more time...)"></textarea>
                 </div>
             </div>
 
-            <div class="modal-footer">
-                <button type="button" class="modal-btn secondary" onclick="closeModal()">Cancel</button>
-                <button type="button" class="modal-btn primary" onclick="submitCompletion()">
+            <div class="modal-footer flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5 mt-6 pt-3 border-t border-border-color">
+                <button type="button" class="modal-btn secondary min-h-[44px] px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-bg-input text-text-main flex items-center justify-center cursor-pointer transition-all border-none" onclick="closeModal()">Cancel</button>
+                <button type="button" class="modal-btn primary min-h-[44px] px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-primary text-white flex items-center justify-center gap-2 cursor-pointer transition-all border-none" onclick="submitCompletion()">
                     <span>Save Review</span>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                         stroke-width="2.5">
@@ -294,7 +297,7 @@
     </div>
 
     <!-- Toast Notification Container -->
-    <div id="toastContainer" class="toast-container"></div>
+    <div id="toastContainer" class="toast-container fixed bottom-4 right-4 left-4 sm:left-auto sm:max-w-md z-50 flex flex-col gap-2.5 pointer-events-none"></div>
 
     <!-- Main JavaScript Logic -->
     <script src="./script.js" defer></script>
