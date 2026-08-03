@@ -11,6 +11,17 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+// Database Availability Guard
+app.use('/api', (req, res, next) => {
+  if (!process.env.DATABASE_URL) {
+    return res.status(503).json({
+      error: "Database not connected",
+      message: "DATABASE_URL is not set. Web app will run in LocalStorage mode."
+    });
+  }
+  next();
+});
+
 // PostgreSQL connection
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
