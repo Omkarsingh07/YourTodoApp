@@ -166,4 +166,12 @@ app.get('/api/stats/:date', async (req, res) => {
   }
 });
 
+// Start listener directly if node api/index.js is executed as entry point (e.g. on Render)
+const PORT = process.env.PORT || 3000;
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
+
 module.exports = app;
