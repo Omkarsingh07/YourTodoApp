@@ -23,22 +23,27 @@ const pool = new Pool({
 // Initialize database
 async function initializeDatabase() {
   try {
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS todos (
-        id SERIAL PRIMARY KEY,
-        text TEXT NOT NULL,
-        date DATE NOT NULL,
-        completed BOOLEAN DEFAULT FALSE,
-        completion_percentage INT DEFAULT 0,
-        reason TEXT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        completed_at TIMESTAMP NULL
-      )
-    `);
-    console.log("✅ Database initialized successfully");
+    if (process.env.DATABASE_URL) {
+      await pool.query(`
+        CREATE TABLE IF NOT EXISTS todos (
+          id SERIAL PRIMARY KEY,
+          text TEXT NOT NULL,
+          date DATE NOT NULL,
+          completed BOOLEAN DEFAULT FALSE,
+          completion_percentage INT DEFAULT 0,
+          reason TEXT,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          completed_at TIMESTAMP NULL
+        )
+      `);
+      console.log("Database initialized successfully");
+    } else {
+      console.log("DATABASE_URL environment variable not set.");
+      console.log("The web app will run smoothly and use local storage fallback for task persistence.");
+    }
   } catch (error) {
-    console.error("❌ Database initialization error:", error);
-    process.exit(1);
+    console.warn("Database initialization warning:", error.message);
+    console.log("The web server will continue running. Client app will fallback to local storage.");
   }
 }
 
@@ -154,7 +159,7 @@ async function startServer() {
   await initializeDatabase();
 
   app.listen(PORT, () => {
-    console.log(`🚀 Server running on http://localhost:${PORT}`);
+    console.log(`Server running on http://localhost:${PORT}`);
   });
 }
 

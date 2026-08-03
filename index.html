@@ -1,308 +1,303 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Todo Manager</title>
+    <meta name="description"
+        content="Daily Todo Manager - Plan your morning, review in night. Track daily tasks, completion percentages, and productivity insights.">
+    <meta name="keywords" content="todo app, daily planner, task manager, productivity tracker, daily review">
+    <meta name="author" content="Daily Todo Manager">
+    <meta property="og:title" content="Daily Todo Manager">
+    <meta property="og:description"
+        content="Plan your morning, review in night with real-time stats and completion tracking.">
+    <meta property="og:type" content="website">
+    <title>Daily Todo Manager — Plan Morning, Review Night</title>
+
+    <!-- CSS Stylesheet -->
     <link rel="stylesheet" href="./style.css">
 </head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>📝 Daily Todo Manager</h1>
-            <p>Plan your morning, review in night</p>
-            <div class="date-selector">
-                <input type="date" id="selectedDate" />
-            </div>
-        </div>
 
-        <div class="main-content">
-            <div class="stats" id="stats">
-                <div class="stat-item">
-                    <div class="stat-number" id="totalTasks">0</div>
-                    <div class="stat-label">Total Tasks</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number" id="completedTasks">0</div>
-                    <div class="stat-label">Completed</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number" id="pendingTasks">0</div>
-                    <div class="stat-label">Pending</div>
-                </div>
-            </div>
+<body class="theme-dark">
+    <div class="app-wrapper">
+        <!-- Background Ambient Glows -->
+        <div class="ambient-glow glow-1"></div>
+        <div class="ambient-glow glow-2"></div>
 
-            <div class="add-todo">
-                <input type="text" class="todo-input" id="todoInput" placeholder="Add your daily task here..." />
-                <button class="add-btn" onclick="addTodo()">➕ Add Task</button>
-            </div>
-
-            <div class="todo-list" id="todoList">
-                <div class="empty-state" id="emptyState">
-                    <div style="font-size: 3em;">📋</div>
-                    <h3>No tasks for today</h3>
-                    <p>Add your first task to get started!</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Completion Modal -->
-    <div id="completionModal" class="modal">
-        <div class="modal-content">
-            <h3>Task Completion Review</h3>
-            <p id="taskTitle"></p>
-            <label for="completionPercentage">How much have you completed? (%)</label>
-            <input type="number" id="completionPercentage" class="percentage-input" min="0" max="100" placeholder="Enter percentage (0-100)" />
-            
-            <div id="reasonSection" style="display: none;">
-                <label for="incompleteReason">Why haven't you completed this task?</label>
-                <textarea id="incompleteReason" class="reason-input" rows="3" placeholder="Please explain why the task is incomplete..."></textarea>
-            </div>
-
-            <div class="modal-buttons">
-                <button class="modal-btn primary" onclick="submitCompletion()">Submit</button>
-                <button class="modal-btn secondary" onclick="closeModal()">Cancel</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        let currentTodos = [];
-        let currentTaskId = null;
-        const API_BASE = '/api';
-
-        // Initialize app
-        document.addEventListener('DOMContentLoaded', function() {
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('selectedDate').value = today;
-            loadTodos();
-            updateStats();
-        });
-
-        // Date change handler
-        document.getElementById('selectedDate').addEventListener('change', function() {
-            loadTodos();
-            updateStats();
-        });
-
-        // Enter key handler for todo input
-        document.getElementById('todoInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                addTodo();
-            }
-        });
-
-        // Completion percentage change handler
-        document.getElementById('completionPercentage').addEventListener('input', function() {
-            const percentage = parseInt(this.value) || 0;
-            const reasonSection = document.getElementById('reasonSection');
-            
-            if (percentage < 100) {
-                reasonSection.style.display = 'block';
-                document.getElementById('incompleteReason').required = true;
-            } else {
-                reasonSection.style.display = 'none';
-                document.getElementById('incompleteReason').required = false;
-                document.getElementById('incompleteReason').value = '';
-            }
-        });
-
-        function getCurrentDate() {
-            return document.getElementById('selectedDate').value;
-        }
-
-        async function addTodo() {
-            const input = document.getElementById('todoInput');
-            const text = input.value.trim();
-            
-            if (!text) {
-                alert('Please enter a task!');
-                return;
-            }
-
-            try {
-                const response = await fetch(`${API_BASE}/todos`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        text: text,
-                        date: getCurrentDate()
-                    })
-                });
-
-                if (response.ok) {
-                    input.value = '';
-                    await loadTodos();
-                    await updateStats();
-                } else {
-                    throw new Error('Failed to add todo');
-                }
-            } catch (error) {
-                console.error('Error adding todo:', error);
-                alert('Failed to add task. Please try again.');
-            }
-        }
-
-        async function deleteTodo(id) {
-            if (confirm('Are you sure you want to delete this task?')) {
-                try {
-                    const response = await fetch(`${API_BASE}/todos/${id}`, {
-                        method: 'DELETE'
-                    });
-
-                    if (response.ok) {
-                        await loadTodos();
-                        await updateStats();
-                    } else {
-                        throw new Error('Failed to delete todo');
-                    }
-                } catch (error) {
-                    console.error('Error deleting todo:', error);
-                    alert('Failed to delete task. Please try again.');
-                }
-            }
-        }
-
-        function markComplete(id) {
-            const todo = currentTodos.find(t => t.id === id);
-            
-            if (todo) {
-                currentTaskId = id;
-                document.getElementById('taskTitle').textContent = `"${todo.text}"`;
-                document.getElementById('completionPercentage').value = '';
-                document.getElementById('incompleteReason').value = '';
-                document.getElementById('reasonSection').style.display = 'none';
-                document.getElementById('completionModal').style.display = 'block';
-            }
-        }
-
-        async function submitCompletion() {
-            const percentage = parseInt(document.getElementById('completionPercentage').value);
-            const reason = document.getElementById('incompleteReason').value.trim();
-
-            if (isNaN(percentage) || percentage < 0 || percentage > 100) {
-                alert('Please enter a valid percentage between 0 and 100!');
-                return;
-            }
-
-            if (percentage < 100 && !reason) {
-                alert('Please explain why the task is incomplete!');
-                return;
-            }
-
-            try {
-                const response = await fetch(`${API_BASE}/todos/${currentTaskId}/complete`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        completionPercentage: percentage,
-                        reason: reason
-                    })
-                });
-
-                if (response.ok) {
-                    await loadTodos();
-                    await updateStats();
-                    closeModal();
-                } else {
-                    throw new Error('Failed to update todo');
-                }
-            } catch (error) {
-                console.error('Error updating todo:', error);
-                alert('Failed to update task. Please try again.');
-            }
-        }
-
-        function closeModal() {
-            document.getElementById('completionModal').style.display = 'none';
-            currentTaskId = null;
-        }
-
-        function renderTodos() {
-            const todoList = document.getElementById('todoList');
-            const emptyState = document.getElementById('emptyState');
-
-            if (currentTodos.length === 0) {
-                todoList.innerHTML = '';
-                todoList.appendChild(emptyState);
-                return;
-            }
-
-            todoList.innerHTML = '';
-
-            currentTodos.forEach(todo => {
-                const todoItem = document.createElement('div');
-                todoItem.className = `todo-item ${todo.completed ? (todo.completion_percentage === 100 ? 'completed' : 'incomplete') : ''}`;
-                
-                let statusHtml = '';
-                if (todo.completed) {
-                    const completedDate = todo.completed_at ? new Date(todo.completed_at).toLocaleString() : 'Unknown';
-                    statusHtml = `
-                        <div class="todo-status">
-                            <span class="completion-percentage">Completion: ${todo.completion_percentage}%</span>
-                            ${todo.completion_percentage < 100 && todo.reason ? `<br><span class="reason-text">Reason: ${todo.reason}</span>` : ''}
-                            <br><small>Completed: ${completedDate}</small>
+        <div class="container">
+            <!-- Header Section -->
+            <header class="header">
+                <div class="header-main">
+                    <div class="brand">
+                        <div class="brand-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                                <path d="m9 12 2 2 4-4" />
+                            </svg>
                         </div>
-                    `;
-                }
-
-                todoItem.innerHTML = `
-                    <div class="todo-content">
-                        <span class="todo-text ${todo.completed ? 'completed' : ''}">${todo.text}</span>
-                        <div class="todo-actions">
-                            ${!todo.completed ? `<button class="complete-btn" onclick="markComplete(${todo.id})">✓ Complete</button>` : ''}
-                            <button class="delete-btn" onclick="deleteTodo(${todo.id})">🗑️ Delete</button>
+                        <div>
+                            <h1>Daily Todo Manager</h1>
+                            <p class="subtitle">Plan your morning, review in night</p>
                         </div>
                     </div>
-                    ${statusHtml}
-                `;
 
-                todoList.appendChild(todoItem);
-            });
-        }
+                    <!-- Header Controls: Theme & Date Navigation -->
+                    <div class="header-actions">
+                        <button id="themeToggle" class="icon-btn" title="Toggle Theme"
+                            aria-label="Toggle light/dark theme">
+                            <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="5" />
+                                <path
+                                    d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+                            </svg>
+                            <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
 
-        async function updateStats() {
-            try {
-                const response = await fetch(`${API_BASE}/stats/${getCurrentDate()}`);
-                if (response.ok) {
-                    const stats = await response.json();
-                    document.getElementById('totalTasks').textContent = stats.total || 0;
-                    document.getElementById('completedTasks').textContent = stats.completed || 0;
-                    document.getElementById('pendingTasks').textContent = stats.pending || 0;
-                }
-            } catch (error) {
-                console.error('Error fetching stats:', error);
-            }
-        }
+                <!-- Date Selector Bar -->
+                <div class="date-bar">
+                    <div class="date-nav">
+                        <button id="prevDateBtn" class="date-nav-btn" title="Previous Day" aria-label="Previous day">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5">
+                                <path d="m15 18-6-6 6-6" />
+                            </svg>
+                        </button>
+                        <div class="date-input-wrapper">
+                            <svg class="calendar-icon" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                                <line x1="16" y1="2" x2="16" y2="6" />
+                                <line x1="8" y1="2" x2="8" y2="6" />
+                                <line x1="3" y1="10" x2="21" y2="10" />
+                            </svg>
+                            <input type="date" id="selectedDate" aria-label="Select Date" />
+                            <span id="dateDisplayLabel" class="date-display-label">Today</span>
+                        </div>
+                        <button id="nextDateBtn" class="date-nav-btn" title="Next Day" aria-label="Next day">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5">
+                                <path d="m9 18 6-6-6-6" />
+                            </svg>
+                        </button>
+                    </div>
+                    <button id="todayBtn" class="today-btn">Today</button>
+                </div>
+            </header>
 
-        async function loadTodos() {
-            try {
-                const response = await fetch(`${API_BASE}/todos/${getCurrentDate()}`);
-                if (response.ok) {
-                    currentTodos = await response.json();
-                    renderTodos();
-                } else {
-                    throw new Error('Failed to load todos');
-                }
-            } catch (error) {
-                console.error('Error loading todos:', error);
-                currentTodos = [];
-                renderTodos();
-            }
-        }
+            <!-- Main Workspace -->
+            <main class="main-content">
+                <!-- Overview Cards & Progress -->
+                <section class="overview-section">
+                    <div class="progress-card">
+                        <div class="progress-info">
+                            <div class="progress-text">
+                                <span class="progress-title">Daily Progress</span>
+                                <span id="progressPercentageText" class="progress-value">0%</span>
+                            </div>
+                            <p id="progressSubtitle" class="progress-subtitle">No tasks added for this day</p>
+                        </div>
+                        <div class="progress-bar-track">
+                            <div id="progressBarFill" class="progress-bar-fill" style="width: 0%;"></div>
+                        </div>
+                    </div>
 
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            const modal = document.getElementById('completionModal');
-            if (event.target === modal) {
-                closeModal();
-            }
-        }
-    </script>
+                    <div class="stats-grid" id="stats">
+                        <div class="stat-card">
+                            <div class="stat-icon total-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path
+                                        d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+                                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+                                </svg>
+                            </div>
+                            <div class="stat-details">
+                                <span class="stat-number" id="totalTasks">0</span>
+                                <span class="stat-label">Total Tasks</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon completed-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                    <polyline points="22 4 12 14.01 9 11.01" />
+                                </svg>
+                            </div>
+                            <div class="stat-details">
+                                <span class="stat-number" id="completedTasks">0</span>
+                                <span class="stat-label">Completed</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon pending-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <polyline points="12 6 12 12 16 14" />
+                                </svg>
+                            </div>
+                            <div class="stat-details">
+                                <span class="stat-number" id="pendingTasks">0</span>
+                                <span class="stat-label">Pending</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Input & Controls Section -->
+                <section class="task-form-section">
+                    <form id="todoForm" class="add-todo-form" onsubmit="event.preventDefault(); addTodo();">
+                        <div class="input-group">
+                            <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19" />
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                            </svg>
+                            <input type="text" class="todo-input" id="todoInput"
+                                placeholder="What do you plan to accomplish today?" autocomplete="off" required />
+                        </div>
+                        <button type="submit" class="add-btn" id="addBtn">
+                            <span>Add Task</span>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5">
+                                <line x1="12" y1="5" x2="12" y2="19" />
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                            </svg>
+                        </button>
+                    </form>
+                </section>
+
+                <!-- Filter & Search Toolbar -->
+                <section class="toolbar-section">
+                    <div class="filter-tabs" role="tablist">
+                        <button class="filter-tab active" data-filter="all" role="tab" aria-selected="true">
+                            All Tasks (<span id="filterAllCount">0</span>)
+                        </button>
+                        <button class="filter-tab" data-filter="pending" role="tab" aria-selected="false">
+                            Pending (<span id="filterPendingCount">0</span>)
+                        </button>
+                        <button class="filter-tab" data-filter="completed" role="tab" aria-selected="false">
+                            Completed (<span id="filterCompletedCount">0</span>)
+                        </button>
+                    </div>
+
+                    <div class="search-box">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="11" cy="11" r="8" />
+                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                        </svg>
+                        <input type="text" id="searchInput" placeholder="Filter by keyword..."
+                            aria-label="Filter tasks by keyword" />
+                    </div>
+                </section>
+
+                <!-- Todo List Container -->
+                <section class="list-section">
+                    <div class="todo-list" id="todoList">
+                        <!-- Dynamic items or empty state -->
+                    </div>
+                </section>
+            </main>
+
+            <!-- Footer -->
+            <footer class="footer">
+                <p>Daily Todo Manager &copy; 2026 — WRSMAT.COM</p>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Template for Empty State (Rendered in JS when zero tasks) -->
+    <template id="emptyStateTemplate">
+        <div class="empty-state" id="emptyState">
+            <div class="empty-illustration">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="12" y1="18" x2="12" y2="12"></line>
+                    <line x1="9" y1="15" x2="15" y2="15"></line>
+                </svg>
+            </div>
+            <h3>No tasks for this day</h3>
+            <p>Start your day with clarity. Add your first goal above!</p>
+        </div>
+    </template>
+
+    <!-- Completion Review Modal -->
+    <div id="completionModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-backdrop" onclick="closeModal()"></div>
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()" aria-label="Close modal">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+            </button>
+
+            <div class="modal-header">
+                <div class="modal-badge">Night Review</div>
+                <h3 id="modalTitle">Task Completion Review</h3>
+                <p class="modal-task-title" id="taskTitle">"Task Title Placeholder"</p>
+            </div>
+
+            <div class="modal-body">
+                <div class="field-group">
+                    <label for="completionPercentage">Completion Percentage: <span id="percentageBadge"
+                            class="percentage-badge">100%</span></label>
+
+                    <!-- Quick Percentage Presets -->
+                    <div class="percentage-presets">
+                        <button type="button" class="preset-btn" data-value="25">25%</button>
+                        <button type="button" class="preset-btn" data-value="50">50%</button>
+                        <button type="button" class="preset-btn" data-value="75">75%</button>
+                        <button type="button" class="preset-btn active" data-value="100">100%</button>
+                    </div>
+
+                    <input type="range" id="completionRange" min="0" max="100" step="5" value="100"
+                        class="range-slider" />
+
+                    <input type="number" id="completionPercentage" class="percentage-input" min="0" max="100"
+                        value="100" placeholder="Enter percentage (0-100)" />
+                </div>
+
+                <div id="reasonSection" class="reason-section" style="display: none;">
+                    <label for="incompleteReason">
+                        Reason for Incomplete Status <span class="required-star">*</span>
+                    </label>
+                    <textarea id="incompleteReason" class="reason-input" rows="3"
+                        placeholder="What got in the way? (e.g., unexpected meetings, need more time...)"></textarea>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="modal-btn secondary" onclick="closeModal()">Cancel</button>
+                <button type="button" class="modal-btn primary" onclick="submitCompletion()">
+                    <span>Save Review</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Main JavaScript Logic -->
+    <script src="./script.js" defer></script>
 </body>
+
 </html>
