@@ -154,13 +154,14 @@ app.get('/api/stats/:date', async (req, res) => {
   }
 });
 
-// Start server
-async function startServer() {
-  await initializeDatabase();
+// Start server (for local development)
+initializeDatabase();
 
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
   app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
   });
 }
 
-startServer();
+// Export for Vercel Serverless
+module.exports = app;
