@@ -13,47 +13,12 @@
         content="Plan your morning, review in night with real-time stats and completion tracking.">
     <meta property="og:type" content="website">
     <title>Daily Todo Manager — Plan Morning, Review Night</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✔</text></svg>">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
-
-    <!-- Tailwind CSS CDN Fallback & Config -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        darkMode: 'class',
-        theme: {
-          extend: {
-            colors: {
-              'bg-main': 'var(--bg-main)',
-              'bg-card': 'var(--bg-card)',
-              'bg-card-solid': 'var(--bg-card-solid)',
-              'bg-input': 'var(--bg-input)',
-              'bg-hover': 'var(--bg-hover)',
-              'border-color': 'var(--border-color)',
-              'border-focus': 'var(--border-focus)',
-              'text-main': 'var(--text-main)',
-              'text-muted': 'var(--text-muted)',
-              'text-dim': 'var(--text-dim)',
-              'primary': 'var(--primary)',
-              'primary-hover': 'var(--primary-hover)',
-              'primary-glow': 'var(--primary-glow)',
-              'success': 'var(--success)',
-              'warning': 'var(--warning)',
-              'danger': 'var(--danger)',
-            },
-            borderRadius: {
-              'sm': 'var(--radius-sm)',
-              'md': 'var(--radius-md)',
-              'lg': 'var(--radius-lg)',
-              'xl': 'var(--radius-xl)',
-            }
-          }
-        }
-      }
-    </script>
 
     <!-- Custom CSS Stylesheets -->
     <link rel="stylesheet" href="style.css">
@@ -198,7 +163,7 @@
 
                 <!-- Input & Controls Section -->
                 <section class="task-form-section">
-                    <form id="todoForm" class="add-todo-form flex flex-col md:flex-row gap-3 items-stretch w-full" onsubmit="event.preventDefault(); addTodo();">
+                    <form id="todoForm" class="add-todo-form flex flex-col md:flex-row gap-3 items-stretch w-full" onsubmit="event.preventDefault(); window.addTodo();">
                         <div class="input-group relative flex-1 flex items-center w-full">
                             <svg class="input-icon absolute left-4 text-text-dim pointer-events-none" width="20" height="20" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="2">
@@ -278,9 +243,9 @@
 
     <!-- Completion Review Modal -->
     <div id="completionModal" class="modal fixed inset-0 z-50 p-3 sm:p-4 items-center justify-center overflow-y-auto hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-        <div class="modal-backdrop fixed inset-0 bg-black/70 backdrop-blur-sm" onclick="closeModal()"></div>
+        <div class="modal-backdrop fixed inset-0 bg-black/70 backdrop-blur-sm" onclick="window.closeModal()"></div>
         <div class="modal-content relative z-10 w-full max-w-lg max-h-[90vh] my-auto mx-auto bg-bg-card-solid border border-border-color rounded-2xl md:rounded-3xl p-4 sm:p-7 shadow-2xl flex flex-col overflow-y-auto">
-            <button class="modal-close absolute top-4 right-4 min-w-[44px] min-h-[44px] p-2 flex items-center justify-center bg-transparent text-text-dim hover:text-text-main cursor-pointer rounded-lg border-none" onclick="closeModal()" aria-label="Close modal">
+            <button class="modal-close absolute top-4 right-4 min-w-[44px] min-h-[44px] p-2 flex items-center justify-center bg-transparent text-text-dim hover:text-text-main cursor-pointer rounded-lg border-none" onclick="window.closeModal()" aria-label="Close modal">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <line x1="18" y1="6" x2="6" y2="18" />
                     <line x1="6" y1="6" x2="18" y2="18" />
@@ -325,8 +290,8 @@
             </div>
 
             <div class="modal-footer flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5 mt-6 pt-3 border-t border-border-color">
-                <button type="button" class="modal-btn secondary min-h-[44px] px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-bg-input text-text-main flex items-center justify-center cursor-pointer transition-all border-none hover:bg-bg-hover" onclick="closeModal()">Cancel</button>
-                <button type="button" class="modal-btn primary min-h-[44px] px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-primary text-white flex items-center justify-center gap-2 cursor-pointer transition-all border-none hover:bg-primary-hover shadow-md" onclick="submitCompletion()">
+                <button type="button" class="modal-btn secondary min-h-[44px] px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-bg-input text-text-main flex items-center justify-center cursor-pointer transition-all border-none hover:bg-bg-hover" onclick="window.closeModal()">Cancel</button>
+                <button type="button" class="modal-btn primary min-h-[44px] px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-primary text-white flex items-center justify-center gap-2 cursor-pointer transition-all border-none hover:bg-primary-hover shadow-md" onclick="window.submitCompletion()">
                     <span>Save Review</span>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                         stroke-width="2.5">
@@ -341,7 +306,7 @@
     <div id="toastContainer" class="toast-container fixed bottom-4 right-4 left-4 sm:left-auto sm:max-w-md z-50 flex flex-col gap-2.5 pointer-events-none"></div>
 
     <!-- Main JavaScript Logic -->
-    <script src="./script.js" defer></script>
+    <script src="script.js"></script>
 </body>
 
 </html>

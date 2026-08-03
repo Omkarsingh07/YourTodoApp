@@ -1,5 +1,6 @@
 // api/index.js - Vercel Serverless Function Entry Point
 require('dotenv').config();
+const path = require('path');
 const express = require('express');
 const { Pool } = require('pg');
 const cors = require('cors');
@@ -10,6 +11,9 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
+
+// Serve static assets from project root as fallback
+app.use(express.static(path.join(__dirname, '..')));
 
 // Database Availability Guard
 app.use('/api', (req, res, next) => {

@@ -536,3 +536,12 @@ function showToast(message, type = 'info') {
         setTimeout(() => toast.remove(), 300);
     }, 3000);
 }
+
+// Bind functions to window object for inline HTML event handlers
+window.addTodo = addTodo;
+window.markComplete = markComplete;
+window.deleteTodo = deleteTodo;
+window.closeModal = closeModal;
+window.submitCompletion = submitCompletion;
+window.toggleTheme = toggleTheme;
+
