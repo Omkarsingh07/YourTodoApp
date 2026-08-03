@@ -14,7 +14,48 @@
     <meta property="og:type" content="website">
     <title>Daily Todo Manager — Plan Morning, Review Night</title>
 
-    <!-- CSS Stylesheets -->
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN Fallback & Config -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              'bg-main': 'var(--bg-main)',
+              'bg-card': 'var(--bg-card)',
+              'bg-card-solid': 'var(--bg-card-solid)',
+              'bg-input': 'var(--bg-input)',
+              'bg-hover': 'var(--bg-hover)',
+              'border-color': 'var(--border-color)',
+              'border-focus': 'var(--border-focus)',
+              'text-main': 'var(--text-main)',
+              'text-muted': 'var(--text-muted)',
+              'text-dim': 'var(--text-dim)',
+              'primary': 'var(--primary)',
+              'primary-hover': 'var(--primary-hover)',
+              'primary-glow': 'var(--primary-glow)',
+              'success': 'var(--success)',
+              'warning': 'var(--warning)',
+              'danger': 'var(--danger)',
+            },
+            borderRadius: {
+              'sm': 'var(--radius-sm)',
+              'md': 'var(--radius-md)',
+              'lg': 'var(--radius-lg)',
+              'xl': 'var(--radius-xl)',
+            }
+          }
+        }
+      }
+    </script>
+
+    <!-- Custom CSS Stylesheets -->
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="output.css">
 </head>
@@ -64,7 +105,7 @@
                 <!-- Date Selector Bar -->
                 <div class="date-bar flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 w-full">
                     <div class="date-nav flex items-center justify-between sm:justify-start gap-2 w-full sm:w-auto flex-1">
-                        <button id="prevDateBtn" class="date-nav-btn min-w-[44px] min-h-[44px] w-11 h-11 rounded-lg flex items-center justify-center transition-all bg-bg-input border border-border-color text-text-main hover:bg-bg-hover hover:text-primary" title="Previous Day" aria-label="Previous day">
+                        <button id="prevDateBtn" class="date-nav-btn min-w-[44px] min-h-[44px] w-11 h-11 rounded-lg flex items-center justify-center transition-all bg-bg-input border border-border-color text-text-main hover:bg-bg-hover hover:text-primary cursor-pointer" title="Previous Day" aria-label="Previous day">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2.5">
                                 <path d="m15 18-6-6 6-6" />
@@ -81,14 +122,14 @@
                             <input type="date" id="selectedDate" aria-label="Select Date" class="border-none bg-transparent text-text-main text-xs sm:text-sm font-semibold outline-none cursor-pointer" />
                             <span id="dateDisplayLabel" class="date-display-label text-xs font-bold text-primary bg-primary-glow px-2.5 py-1 rounded-full whitespace-nowrap">Today</span>
                         </div>
-                        <button id="nextDateBtn" class="date-nav-btn min-w-[44px] min-h-[44px] w-11 h-11 rounded-lg flex items-center justify-center transition-all bg-bg-input border border-border-color text-text-main hover:bg-bg-hover hover:text-primary" title="Next Day" aria-label="Next day">
+                        <button id="nextDateBtn" class="date-nav-btn min-w-[44px] min-h-[44px] w-11 h-11 rounded-lg flex items-center justify-center transition-all bg-bg-input border border-border-color text-text-main hover:bg-bg-hover hover:text-primary cursor-pointer" title="Next Day" aria-label="Next day">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2.5">
                                 <path d="m9 18 6-6-6-6" />
                             </svg>
                         </button>
                     </div>
-                    <button id="todayBtn" class="today-btn min-h-[44px] px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-primary bg-primary-glow border border-primary/30 transition-all hover:bg-primary hover:text-white flex items-center justify-center w-full sm:w-auto">Today</button>
+                    <button id="todayBtn" class="today-btn min-h-[44px] px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-primary bg-primary-glow border border-primary/30 transition-all hover:bg-primary hover:text-white flex items-center justify-center w-full sm:w-auto cursor-pointer">Today</button>
                 </div>
             </header>
 
@@ -236,10 +277,10 @@
     </template>
 
     <!-- Completion Review Modal -->
-    <div id="completionModal" class="modal fixed inset-0 z-50 p-3 sm:p-4 items-center justify-center overflow-y-auto hidden [&.active]:flex" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div id="completionModal" class="modal fixed inset-0 z-50 p-3 sm:p-4 items-center justify-center overflow-y-auto hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
         <div class="modal-backdrop fixed inset-0 bg-black/70 backdrop-blur-sm" onclick="closeModal()"></div>
         <div class="modal-content relative z-10 w-full max-w-lg max-h-[90vh] my-auto mx-auto bg-bg-card-solid border border-border-color rounded-2xl md:rounded-3xl p-4 sm:p-7 shadow-2xl flex flex-col overflow-y-auto">
-            <button class="modal-close absolute top-4 right-4 min-w-[44px] min-h-[44px] p-2 flex items-center justify-center bg-transparent text-text-dim hover:text-text-main cursor-pointer rounded-lg" onclick="closeModal()" aria-label="Close modal">
+            <button class="modal-close absolute top-4 right-4 min-w-[44px] min-h-[44px] p-2 flex items-center justify-center bg-transparent text-text-dim hover:text-text-main cursor-pointer rounded-lg border-none" onclick="closeModal()" aria-label="Close modal">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <line x1="18" y1="6" x2="6" y2="18" />
                     <line x1="6" y1="6" x2="18" y2="18" />
@@ -284,8 +325,8 @@
             </div>
 
             <div class="modal-footer flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5 mt-6 pt-3 border-t border-border-color">
-                <button type="button" class="modal-btn secondary min-h-[44px] px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-bg-input text-text-main flex items-center justify-center cursor-pointer transition-all border-none" onclick="closeModal()">Cancel</button>
-                <button type="button" class="modal-btn primary min-h-[44px] px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-primary text-white flex items-center justify-center gap-2 cursor-pointer transition-all border-none" onclick="submitCompletion()">
+                <button type="button" class="modal-btn secondary min-h-[44px] px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-bg-input text-text-main flex items-center justify-center cursor-pointer transition-all border-none hover:bg-bg-hover" onclick="closeModal()">Cancel</button>
+                <button type="button" class="modal-btn primary min-h-[44px] px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-primary text-white flex items-center justify-center gap-2 cursor-pointer transition-all border-none hover:bg-primary-hover shadow-md" onclick="submitCompletion()">
                     <span>Save Review</span>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                         stroke-width="2.5">

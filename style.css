@@ -1,12 +1,13 @@
-/* Daily Todo Manager - Custom Styles system (Variables, Animations, Blurs, Non-layout styles) */
+/* Daily Todo Manager - Modern Premium Design System */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
   /* Dark Theme (Default) */
-  --bg-main: #0b0f19;
-  --bg-card: rgba(18, 24, 38, 0.75);
-  --bg-card-solid: #121826;
-  --bg-input: #1a2234;
-  --bg-hover: #222b40;
+  --bg-main: #090d16;
+  --bg-card: rgba(15, 22, 36, 0.75);
+  --bg-card-solid: #0f1624;
+  --bg-input: #162032;
+  --bg-hover: #1e2c45;
   --border-color: rgba(255, 255, 255, 0.08);
   --border-focus: #3b82f6;
 
@@ -19,12 +20,12 @@
   --primary-glow: rgba(59, 130, 246, 0.35);
 
   --success: #10b981;
-  --success-bg: rgba(16, 185, 129, 0.12);
-  --success-border: rgba(16, 185, 129, 0.3);
+  --success-bg: rgba(16, 185, 129, 0.15);
+  --success-border: rgba(16, 185, 129, 0.35);
 
   --warning: #f59e0b;
-  --warning-bg: rgba(245, 158, 11, 0.12);
-  --warning-border: rgba(245, 158, 11, 0.3);
+  --warning-bg: rgba(245, 158, 11, 0.15);
+  --warning-border: rgba(245, 158, 11, 0.35);
 
   --danger: #ef4444;
   --danger-hover: #dc2626;
@@ -38,18 +39,17 @@
   --radius-lg: 20px;
   --radius-xl: 24px;
 
-  --font-text: "SF Pro Text", -apple-system, BlinkMacSystemFont, "SF Pro", "SF Compact Text", system-ui, sans-serif;
-  --font-display: "SF Pro Display", -apple-system, BlinkMacSystemFont, "SF Pro", "SF Compact Display", system-ui, sans-serif;
-  --font-family: var(--font-text);
+  --font-text: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-smooth: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body.theme-light {
-  --bg-main: #f1f5f9;
+  --bg-main: #f8fafc;
   --bg-card: rgba(255, 255, 255, 0.85);
   --bg-card-solid: #ffffff;
-  --bg-input: #f8fafc;
+  --bg-input: #f1f5f9;
   --bg-hover: #e2e8f0;
   --border-color: #e2e8f0;
   --border-focus: #2563eb;
@@ -84,6 +84,11 @@ body.theme-light {
   padding: 0;
 }
 
+/* Base resets & utilities fallback */
+.hidden {
+  display: none !important;
+}
+
 body {
   font-family: var(--font-text);
   background-color: var(--bg-main);
@@ -112,33 +117,33 @@ button, input, select, textarea {
 .ambient-glow {
   position: fixed;
   border-radius: 50%;
-  filter: blur(100px);
+  filter: blur(120px);
   pointer-events: none;
   z-index: 0;
-  opacity: 0.35;
+  opacity: 0.4;
   max-width: 100vw;
   max-height: 100vh;
 }
 .glow-1 {
-  width: 320px;
-  height: 320px;
-  background: var(--primary);
-  top: -80px;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, var(--primary), rgba(99, 102, 241, 0.4));
+  top: -100px;
   left: 5%;
 }
 .glow-2 {
-  width: 280px;
-  height: 280px;
-  background: #8b5cf6;
-  bottom: -40px;
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, #8b5cf6, rgba(236, 72, 153, 0.3));
+  bottom: -60px;
   right: 5%;
 }
 
 /* Brand Icon Custom Gradient */
 .brand-icon {
-  background: linear-gradient(135deg, var(--primary), #8b5cf6);
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
   color: #ffffff;
-  box-shadow: 0 8px 16px var(--primary-glow);
+  box-shadow: 0 8px 20px var(--primary-glow);
 }
 
 /* Theme Toggle Icons */
@@ -173,17 +178,28 @@ body.theme-light .moon-icon { display: block; }
 .stat-icon.pending-icon { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
 
 .progress-bar-fill {
-  background: linear-gradient(90deg, var(--primary), var(--success));
+  background: linear-gradient(90deg, #3b82f6, #10b981);
 }
 
-/* Modal Animations */
+/* Modal Core Styles & Animations */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+}
+
+.modal.active {
+  display: flex !important;
+}
+
 .modal-content {
   animation: modalSlideUp 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @keyframes modalSlideUp {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 /* Toast Notifications */
